@@ -21,14 +21,17 @@ def _main():
 
     """
     reviews = reviews_to_pandas(DATA_DIR)
+    businesses = businesses_to_pandas(DATA_DIR)
 
     if HDF:
-        reviews.to_hdf('../data/df.hdf', 'df', mode='w', format='f')
+        print("Writing to hdf")
+        reviews.to_hdf('../data/reviews.hdf', 'df', mode='w', format='f')
+        businesses.to_hdf('../data/businesses.hdf', 'businesses', mode='w', format='f')
 
     print(reviews.head(2))
 
-    businesses = businesses_to_pandas(DATA_DIR)
-    businesses.to_hdf('..data/df.hdf', 'businesses', mode='w', format='f')
+
+
 
 
 def reviews_to_pandas(dir):
@@ -47,8 +50,6 @@ def reviews_to_pandas(dir):
     >>> df.head(2)
 
     """
-
-
 
     data = load_json_file(dir + 'yelp_academic_dataset_review.json')
     df = parse_large_df(data)
@@ -69,17 +70,18 @@ def businesses_to_pandas(dir):
     """
     data = load_json_file(dir + 'yelp_academic_dataset_business.json')
     df = parse_large_df(data)
+    df = df.drop('attributes', axis=1)
 
     return df
 
 
-def parse_large_df(data):
+def parse_large_df(data, normalize=False):
     """
     Hacky way to deal with dataframes that are large quickly from a json file.
 
     Parameters
     ----------
-    data: A list of the json files
+    data: A list of the json objects
 
     Returns
     -------
@@ -93,7 +95,7 @@ def parse_large_df(data):
         minis[i] = temp
         print(str(j) + ' rows in a df')
 
-    df = pd.read_json(data[0])
+        df = pd.DataFrame()
     for i in range(1, (len(data)), 10000):
         df = pd.concat([df, minis[i]], ignore_index=True, axis=0)
         print('appending {}'.format(i))
@@ -107,6 +109,7 @@ def load_json_file(json_dir):
 
     Returns
     -------
+    A list of JSON objects.
 
     """
     with open(json_dir) as jsonfile:
@@ -116,6 +119,22 @@ def load_json_file(json_dir):
 
     return data
 
+
+def join_businesses_reviews(reviews, businesses):
+    """
+
+    Parameters
+    ----------
+    reviews
+    businesses
+
+    Returns
+    -------
+
+    """
+    df = reviews.join(businesses, on='review_id', how='inner')
+    print("Lost {} Reviews during the join process".format(len(reviews) - len(df)))
+    return df
 
 if __name__ == '__main__':
     sys.exit(_main())
