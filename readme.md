@@ -9,6 +9,11 @@ their preferences manually. This latter method is a solution to the cold-start p
 For example, users who prioritize a cheap restaurant and don't particularly care about atmosphere will be served
 with recommendations that users with similar priorities liked. 
 
+The most compelling feature of this recommendation system is perhaps the solution to the cold-start problem. (Implicitly) Comparing users'
+specific preferences is why collaborative filtering tends to out-perform item based filtering. 
+
+// Might want to do a theory note on that 
+
 // Screenshot here
  
 # An Example
@@ -22,7 +27,8 @@ a 1.
 
 # Methodology
 ## New Sentiment Analysis
-I train a new model to estimate the sentiment of each word based on 
+I train a new model to estimate the sentiment of each word using the star ratings of the review as whether the sentiment should 
+ be positive or negative. In accordance with [1] I include a neutral category in the training. 
 
 The results of my training set are as follows:
 
@@ -63,4 +69,4 @@ A map is available of the top 10 recommended items based on the input given.
 # Resources
 This project was inspired by the following papers:
 
-1. 
+1. Koppel, Moshe, and Jonathan Schler. "The importance of neutral examples for learning sentiment." Computational Intelligence 22, no. 2 (2006): 100-109.

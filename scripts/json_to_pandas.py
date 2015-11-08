@@ -11,13 +11,14 @@ import logging
 DATA_DIR = '/Users/Will/Data/newest_yelp/'
 
 HDF = False
+GENERATE_SAMPLE = True
 
 
 def _main():
     """
-
-    Returns
-    -------
+    Generates the business and reviews dataframes from the YELP JSON format and
+    converts it to a pd.DataFrame. Optionally will also save a sample to it to an
+    HDF file.
 
     """
     reviews = reviews_to_pandas(DATA_DIR)
@@ -28,9 +29,13 @@ def _main():
         reviews.to_hdf('../data/reviews.hdf', 'df', mode='w', format='f')
         businesses.to_hdf('../data/businesses.hdf', 'businesses', mode='w', format='f')
 
+    if GENERATE_SAMPLE:
+        sample_reviews = reviews.sample(frac=0.1)
+        sample_businesses = businesses.sample(frac=0.1)
+        sample_businesses.to_hdf('../data/sample_sample_businesses.hdf', 'df', mode='w', format='f')
+        sample_reviews.to_hdf('../data/sample_reviews.hdf', 'businesses', mode='w', format='f')
+
     print(reviews.head(2))
-
-
 
 
 
@@ -135,6 +140,7 @@ def join_businesses_reviews(reviews, businesses):
     df = reviews.join(businesses, on='review_id', how='inner')
     print("Lost {} Reviews during the join process".format(len(reviews) - len(df)))
     return df
+
 
 if __name__ == '__main__':
     sys.exit(_main())

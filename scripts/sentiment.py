@@ -31,6 +31,7 @@ def tf_idf_feats(words):
 def label_reviews(reviews):
     """
 
+
     Parameters
     ----------
     df
@@ -39,13 +40,20 @@ def label_reviews(reviews):
     -------
 
     """
-    negative_reviews = reviews[reviews.stars.isin([1,2,3])]
+    negative_reviews = reviews[reviews.stars.isin([1,2])]
     positive_reviews = reviews[reviews.stars.isin([4,5])]
+    neutral_reviews = reviews[reviews.stars == 3]
 
+
+    # Problem: Might be weird for separation purposes here. May want to just keep
+    # it in a list.
     positive_text = ' '.join([i for i in positive_reviews.text.values])
     negative_text = ' '.join([i for i in negative_reviews.text.values])
+    neutral_reviews = ' '.join([i for i in neutral_reviews.text.values])
 
     assert type(positive_text) == str
+
+    return positive_text, negative_text, neutral_reviews
 
 
 
