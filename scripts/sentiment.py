@@ -7,9 +7,13 @@ Methodology:
     2. Label positive and negative reviews
         - 4 or 5 stars positive, 1 or 2 stars negative
     3. Make positive and negative features
-    4. Split the dataset
+    4. Split the dataset into train_test_split
+    5. Validate dataset using cross validation
+    6.
 """
 import pandas as pd
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.cross_validation import train_test_split
 
 
 def _main():
@@ -18,6 +22,9 @@ def _main():
 
     """
     reviews = pd.read_hdf('../data/reviews.hdf',)
+    X_train, X_test, y_train, y_test = train_test_split(reviews.text, reviews.stars,
+                                                        train_size=0.8, random_state=188)
+
 
 
 def bag_of_word_feats(words):
@@ -67,7 +74,7 @@ def assign_features():
     """
 
 
-def train_model(train_features):
+def train_svm(train_features):
     """
 
     Parameters
@@ -78,6 +85,54 @@ def train_model(train_features):
     -------
 
     """
+
+
+def train_linear_model(train_features, targets):
+    """
+    Tends to perform better than SVM in the case of three-way classification between neutral
+     and non-neutral things
+
+    Parameters
+    ----------
+    train_features
+    targets
+
+    Returns
+    -------
+
+    Notes
+    ----
+
+
+    """
+
+
+def train_nb(train_features, targets):
+    """
+    Trains the sentiment of the reviews based
+
+    Parameters
+    ----------
+    train_features
+    targets
+
+    Returns
+    -------
+
+    """
+    clf = MultinomialNB()
+    model = clf.fit(train_features, targets)
+    return model
+
+
+def predict_sentiment():
+    """
+
+    Returns
+    -------
+
+    """
+
 
 def eval_model(model, test_features):
     """

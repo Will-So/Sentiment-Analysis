@@ -12,6 +12,7 @@ DATA_DIR = '/Users/Will/Data/newest_yelp/'
 
 HDF = False
 GENERATE_SAMPLE = True
+GENERATE_RESTAURANT_REVIEWS = True
 
 
 def _main():
@@ -34,6 +35,14 @@ def _main():
         sample_businesses = businesses.sample(frac=0.1)
         sample_businesses.to_hdf('../data/sample_sample_businesses.hdf', 'df', mode='w', format='f')
         sample_reviews.to_hdf('../data/sample_reviews.hdf', 'businesses', mode='w', format='f')
+
+    if GENERATE_RESTAURANT_REVIEWS:
+        restaurants = find_restaurants(businesses)
+        restaurant_reviews = reviews.merge(restaurants, how='inner', on='business_id')
+        restaurant_reviews.to_hdf('../data/restaurant_reviews.hdf', 'df', mode='w', format='f')
+        restaurant_reviews.sample(frac=0.1).to_hdf('../data/sample_rest_reviews.hdf', 'df',
+                                                    mode='w', format='f')
+
 
     print(reviews.head(2))
 
@@ -140,6 +149,27 @@ def join_businesses_reviews(reviews, businesses):
     df = reviews.join(businesses, on='review_id', how='inner')
     print("Lost {} Reviews during the join process".format(len(reviews) - len(df)))
     return df
+
+
+def find_restaurants(df):
+    """
+    Constructs a
+
+    Parameters
+    ----------
+    df
+
+
+    """
+    df['is_rest'] = False
+    # TODO: use Apply for this instead of iterrows
+    for i, val in df.iterrows():
+        if 'Restaurants' in val.categories:
+            df.loc[i, 'is_rest'] = True
+
+    restaurants = df[df.is_rest == True]
+    return restaurants
+
 
 
 if __name__ == '__main__':
