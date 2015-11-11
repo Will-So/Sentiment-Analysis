@@ -14,6 +14,8 @@ Methodology:
 import pandas as pd
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.cross_validation import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.pipeline import Pipeline
 
 
 def _main():
@@ -34,10 +36,29 @@ def bag_of_word_feats(words):
 def tf_idf_feats(words):
     pass
 
+def count_vect_nb(words):
+    """
+    The simplest baseline model that uses multinomial NB
+    Parameters
+    ----------
+    words
+
+    Returns
+    -------
+
+    """
+    vect = CountVectorizer()
+    params = {'count_vect__ngram_range': [(1, 1), 1, 2]}
+
+    X = vect.fit_transform(words)
+
+    clf = Pipeline([('count_vect')])
+
+
 
 def label_reviews(reviews):
     """
-
+    # TODO: Things should be sentence tokenized
 
     Parameters
     ----------
@@ -91,6 +112,8 @@ def train_linear_model(train_features, targets):
     """
     Tends to perform better than SVM in the case of three-way classification between neutral
      and non-neutral things
+
+    I also binarize the feature count as suggested by //
 
     Parameters
     ----------

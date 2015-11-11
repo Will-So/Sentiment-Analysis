@@ -11,7 +11,7 @@ import logging
 DATA_DIR = '/Users/Will/Data/newest_yelp/'
 
 HDF = False
-GENERATE_SAMPLE = True
+GENERATE_SAMPLE = False
 GENERATE_RESTAURANT_REVIEWS = True
 
 
@@ -39,12 +39,12 @@ def _main():
     if GENERATE_RESTAURANT_REVIEWS:
         restaurants = find_restaurants(businesses)
         restaurant_reviews = reviews.merge(restaurants, how='inner', on='business_id')
+        restaurant_reviews = clean_rest_reviews(restaurant_reviews)
+
         restaurant_reviews.to_hdf('../data/restaurant_reviews.hdf', 'df', mode='w', format='f')
         restaurant_reviews.sample(frac=0.1).to_hdf('../data/sample_rest_reviews.hdf', 'df',
                                                     mode='w', format='f')
 
-
-    print(reviews.head(2))
 
 
 
@@ -73,14 +73,7 @@ def reviews_to_pandas(dir):
 
 def businesses_to_pandas(dir):
     """
-
-    Parameters
-    ----------
-    dir
-
-    Returns
-    -------
-
+    Loads JSON and returns a dataframe
     """
     data = load_json_file(dir + 'yelp_academic_dataset_business.json')
     df = parse_large_df(data)
@@ -147,7 +140,10 @@ def join_businesses_reviews(reviews, businesses):
 
     """
     df = reviews.join(businesses, on='review_id', how='inner')
+    del df['stars_y']
     print("Lost {} Reviews during the join process".format(len(reviews) - len(df)))
+
+
     return df
 
 
@@ -168,7 +164,19 @@ def find_restaurants(df):
             df.loc[i, 'is_rest'] = True
 
     restaurants = df[df.is_rest == True]
+
     return restaurants
+
+
+def clean_rest_reviews(df):
+    """
+    Removes unneccesary features and renames a column
+    """
+    df = df.rename(columns={'stars_x': 'stars'})
+    df = df[['date', 'review_id', 'text', 'user_id',
+                   'city', 'latitude', 'longitude', 'name', 'neighborhoods',
+                   'stars', 'hours']]
+    return df
 
 
 
