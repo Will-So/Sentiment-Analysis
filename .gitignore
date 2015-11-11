@@ -1,1 +1,5 @@
 research
+.ipynb_checkpoints
+.idea
+scripts/__pycache__
+data/
