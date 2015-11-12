@@ -14,7 +14,7 @@ Methodology:
 import pandas as pd
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.cross_validation import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.pipeline import Pipeline
 
 
@@ -28,14 +28,6 @@ def _main():
                                                         train_size=0.8, random_state=188)
 
 
-
-def bag_of_word_feats(words):
-    return {word: True for word in words}
-
-
-def tf_idf_feats(words):
-    pass
-
 def count_vect_nb(words):
     """
     The simplest baseline model that uses multinomial NB
@@ -48,41 +40,46 @@ def count_vect_nb(words):
 
     """
     vect = CountVectorizer()
-    params = {'count_vect__ngram_range': [(1, 1), 1, 2]}
+    params = {'count_vect__ngram_range': [(1, 1), (1, 2)]}
 
     X = vect.fit_transform(words)
 
     clf = Pipeline([('count_vect')])
 
 
-
-def label_reviews(reviews):
-    """
-    # TODO: Things should be sentence tokenized
-
-    Parameters
-    ----------
-    df
-
-    Returns
-    -------
-
-    """
-    negative_reviews = reviews[reviews.stars.isin([1,2])]
-    positive_reviews = reviews[reviews.stars.isin([4,5])]
-    neutral_reviews = reviews[reviews.stars == 3]
+def tfidf(words):
+    vect = TfidfVectorizer()
 
 
-    # Problem: Might be weird for separation purposes here. May want to just keep
-    # it in a list.
-    positive_text = ' '.join([i for i in positive_reviews.text.values])
-    negative_text = ' '.join([i for i in negative_reviews.text.values])
-    neutral_reviews = ' '.join([i for i in neutral_reviews.text.values])
 
-    assert type(positive_text) == str
-
-    return positive_text, negative_text, neutral_reviews
-
+#
+# def label_reviews(reviews):
+#     """
+#     # TODO: Things should be sentence tokenized
+#
+#     Parameters
+#     ----------
+#     df
+#
+#     Returns
+#     -------
+#
+#     """
+#     negative_reviews = reviews[reviews.stars.isin([1,2])]
+#     positive_reviews = reviews[reviews.stars.isin([4,5])]
+#     neutral_reviews = reviews[reviews.stars == 3]
+#
+#
+#     # Problem: Might be weird for separation purposes here. May want to just keep
+#     # it in a list.
+#     positive_text = ' '.join([i for i in positive_reviews.text.values])
+#     negative_text = ' '.join([i for i in negative_reviews.text.values])
+#     neutral_reviews = ' '.join([i for i in neutral_reviews.text.values])
+#
+#     assert type(positive_text) == str
+#
+#     return positive_text, negative_text, neutral_reviews
+#
 
 
 
