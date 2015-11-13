@@ -6,7 +6,7 @@ Very basic preprocessing of the review text
 import pandas as pd
 import sys
 import os
-
+from string import punctuation
 
 
 def _main():
@@ -29,6 +29,8 @@ def get_text_and_labels(data):
     data.loc[data.stars.isin([4,5]), 'target'] = 1
     data.loc[data.stars.isin([3]), 'target'] = 0
     data = data[['text', 'target']]
+    for p in punctuation + ' ':
+        data.text = data.text.str.replace(p, '')
 
     return data
 

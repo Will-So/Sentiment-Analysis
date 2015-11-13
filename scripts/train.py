@@ -7,14 +7,32 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import confusion_matrix
+from sklearn.cross_validation import train_test_split
 
 data = pd.read_hdf('../data/test_train.hdf')
 
+X_train, X_test, y_train, y_test = train_test_split(data.text, data.target,
+                                                        test_size=.1, random_state=123)
 
-def make_matrix(ser):
+
+def make_rf_matrices(data):
+    """
+    Makes simple tfidf matrices that I used for random forests
+    Parameters
+    ----------
+    data
+
+    Returns
+    -------
+
+    """
     vect = TfidfVectorizer()
-    X = vect.fit_transform(ser)
-    return X
+    X = vect.fit_transform(data.text)
+
+
+    vect.transform(X_train); vect.transform(X_test)
+
+    return X_train, X_test, y_train, y_test
 
 
 def train_svc(X, y):
@@ -31,7 +49,7 @@ def train_svc(X, y):
     print(gs.best_score_)
 
 
-def train_random_forest_reg(X, y):
+def train_rf_reg(X, y):
     """
     Reason to believe that random forest regressor
     will be the optimal model because it:
@@ -41,14 +59,7 @@ def train_random_forest_reg(X, y):
 
     Returns
     -------
-
     """
-    params =  {"tfidf__ngram_range": [(1, 1), (1, 2)],
-          "rf__n_estimators": [100, 500, 1000]}
-
-    clf = Pipeline([('tfidf', TfidfVectorizer(sublinear_tf=True)),
-                    'rf', RandomForestRegressor])
-
-    gs = GridSearchCV(clf, params, oob_score=True, max_features='sqrt')
-
-    gs.fit(X, y)
+    rf = RandomForestRegressor(n_estimators=100, max_features='sqrt',
+                               n_jobs=-1, min_samples_leaf=4)
+    return rf.fit(X, y)
