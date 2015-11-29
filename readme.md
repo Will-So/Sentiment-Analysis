@@ -11,9 +11,9 @@ I train a new model to estimate the sentiment of each word using the star rating
 
 
 # Tools Used
-1. Sentiment Analysis with Spacy and Sci-kit learn.
+1. Sentiment Analysis with Spacy and Sci-kit learn for the machine learning and tf-idf processing. 
 
 # Resources
 This project was inspired by the following papers:
 
-1. Koppel, Moshe, and Jonathan Schler. "The importance of neutral examples for learning sentiment." C
+1. Koppel, Moshe, and Jonathan Schler. "The importance of neutral examples for learning sentiment." 
