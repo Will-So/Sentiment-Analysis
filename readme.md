@@ -16,4 +16,7 @@ I train a new model to estimate the sentiment of each word using the star rating
 # Resources
 This project was inspired by the following papers:
 
-1. Koppel, Moshe, and Jonathan Schler. "The importance of neutral examples for learning sentiment." 
+1. Koppel, Moshe, and Jonathan Schler. "The importance of neutral examples for learning sentiment."
+2. http://harshtechtalk.com/get-informative-features-scikit-learn/
+3. [Proof](http://axon.cs.byu.edu/Dan/778/papers/Feature%20Selection/guyon2.pdf) that we can use SVM coefficients to 
+ get the relatively important coefficients. 
