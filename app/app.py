@@ -1,6 +1,7 @@
 from flask_wtf import Form
 from wtforms.fields import StringField, SubmitField
 from wtforms.widgets import TextArea
+from flask.ext.bootstrap import Bootstrap
 
 
 from flask import Flask, render_template, flash
@@ -10,6 +11,9 @@ from sklearn.externals import joblib
 from string import punctuation
 
 app = Flask(__name__)
+
+bootstrap = Bootstrap()
+
 
 model = joblib.load('../best_model/svc.pkl')
 trained_vec = joblib.load('../best_model/vect.pkl')
@@ -22,9 +26,7 @@ def sentiment():
         text = form.body.data
         result = process_input(text)
         flash('This Review seems '.format(result))
-    else:
-        result = None
-    return render_template('app.html', form=form, result=result)
+    return render_template('app.html', form=form)
 
 
 def process_input(review):
@@ -51,10 +53,12 @@ def process_input(review):
     else:
         result = 'negative'
 
-
     return result
-
 
 
 class SentimentForm(Form):
     body = StringField('Text', widget=TextArea())
+    submit = SubmitField('Sentiment')
+
+if __name__ == '__main__':
+    app.run(debug=True)
